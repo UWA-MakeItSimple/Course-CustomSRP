@@ -50,10 +50,5 @@ partial class CameraRenderer
         if (camera.cameraType == CameraType.SceneView)
             ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
     }
-
-    void PrepareBuffer()
-    {
-        buffer.name = SampleName = camera.name;
-    }
 #endif
 }

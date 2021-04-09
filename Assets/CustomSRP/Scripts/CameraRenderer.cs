@@ -11,14 +11,13 @@ partial class CameraRenderer
     ScriptableRenderContext context;
     Camera camera;
 
-    public void Render(ScriptableRenderContext context, Camera camera)
+    public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing)
     {
         this.context = context;
         this.camera = camera;
-        PrepareBuffer();
+        buffer.name = SampleName = camera.name;
 
 #if UNITY_EDITOR
-
         PrepareForSceneWindow();
 #endif
 
@@ -26,7 +25,7 @@ partial class CameraRenderer
             return;
 
         SetUp();
-        DrawVisiableGeometry();
+        DrawVisiableGeometry(useDynamicBatching, useGPUInstancing);
 #if UNITY_EDITOR
         DrawUnsupportedShaders();
         DrawGizmos();
@@ -36,12 +35,14 @@ partial class CameraRenderer
 
     static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
 
-    private void DrawVisiableGeometry()
+    private void DrawVisiableGeometry(bool useDynamicBatching, bool useGPUInstancing)
     {
         //Draw Opaque
         var sortingSettings = new SortingSettings(camera);
         sortingSettings.criteria = SortingCriteria.CommonOpaque;
         var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
+        drawingSettings.enableDynamicBatching = useDynamicBatching;
+        drawingSettings.enableInstancing = useGPUInstancing;
         var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
         context.DrawRenderers(cullingResoults, ref drawingSettings, ref filteringSettings);
         //Draw Skybox
