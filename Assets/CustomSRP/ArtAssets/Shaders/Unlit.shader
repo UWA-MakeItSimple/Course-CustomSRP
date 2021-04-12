@@ -1,4 +1,4 @@
-Shader "CustomSRP/Unlit"
+Shader "CustomRP/Unlit"
 {
     Properties
     {
@@ -27,4 +27,5 @@ Shader "CustomSRP/Unlit"
 			ENDHLSL
         }
     }
+	CustomEditor "CustomShaderGUI"
 }

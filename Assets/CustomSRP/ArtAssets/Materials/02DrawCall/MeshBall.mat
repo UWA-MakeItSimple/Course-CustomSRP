@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MeshBall
-  m_Shader: {fileID: 4800000, guid: 31eb89ba0cfdfa949905df9d87d507bf, type: 3}
+  m_Shader: {fileID: 4800000, guid: dc82aa08dffe0e240bb8bda2c5a7549c, type: 3}
   m_ShaderKeywords: _CLIPPING
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -27,8 +27,11 @@ Material:
     - _Clipping: 1
     - _Cutoff: 0.532
     - _DstBlend: 0
+    - _Metallic: 0
+    - _PremulAlpha: 0
+    - _Smoothness: 0.5
     - _SrcBlend: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.52716494, g: 0, b: 1, a: 1}
+    - _BaseColor: {r: 0.83213097, g: 0.6462264, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -15,6 +15,7 @@ public class CustomRenderPipeline : RenderPipeline
         this.useGPUInstancing = useGPUInstancing;
         //SRP Batcher
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
+        GraphicsSettings.lightsUseLinearIntensity = true;
     }
 
     protected override void Render(ScriptableRenderContext context, Camera[] cameras)

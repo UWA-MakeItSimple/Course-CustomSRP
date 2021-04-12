@@ -7,6 +7,7 @@ partial class CameraRenderer
     const string bufferName = "Render Camera";
     CommandBuffer buffer = new CommandBuffer() { name = bufferName };
     CullingResults cullingResoults;
+    Lighting lighting = new Lighting();
 
     ScriptableRenderContext context;
     Camera camera;
@@ -25,6 +26,7 @@ partial class CameraRenderer
             return;
 
         SetUp();
+        lighting.Setup(context, cullingResoults);
         DrawVisiableGeometry(useDynamicBatching, useGPUInstancing);
 #if UNITY_EDITOR
         DrawUnsupportedShaders();
@@ -34,15 +36,19 @@ partial class CameraRenderer
     }
 
     static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
+    static ShaderTagId litShaderTagId = new ShaderTagId("CustomLit");
 
     private void DrawVisiableGeometry(bool useDynamicBatching, bool useGPUInstancing)
     {
         //Draw Opaque
         var sortingSettings = new SortingSettings(camera);
         sortingSettings.criteria = SortingCriteria.CommonOpaque;
-        var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
-        drawingSettings.enableDynamicBatching = useDynamicBatching;
-        drawingSettings.enableInstancing = useGPUInstancing;
+        var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings)
+        {
+            enableDynamicBatching = useDynamicBatching,
+            enableInstancing = useGPUInstancing
+        };
+        drawingSettings.SetShaderPassName(1, litShaderTagId);
         var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
         context.DrawRenderers(cullingResoults, ref drawingSettings, ref filteringSettings);
         //Draw Skybox
