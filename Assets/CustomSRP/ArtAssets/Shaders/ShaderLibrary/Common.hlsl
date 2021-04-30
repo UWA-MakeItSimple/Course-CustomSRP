@@ -1,4 +1,4 @@
-#ifndef CUSTOM_COMMON_INCLUDED
+﻿#ifndef CUSTOM_COMMON_INCLUDED
 #define CUSTOM_COMMON_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
@@ -11,12 +11,19 @@
 #define UNITY_MATRIX_VP unity_MatrixVP
 #define UNITY_MATRIX_P glstate_matrix_projection
 
+#if defined(_SHADOW_MASK_ALWAYS) || defined(_SHADOW_MASK_DISTANCE)
+	#define SHADOWS_SHADOWMASK
+#endif
+
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
 
-float Square(float x)
-{
-    return x * x;
+float Square (float x) {
+	return x * x;
+}
+
+float DistanceSquared(float3 pA, float3 pB) {
+	return dot(pA - pB, pA - pB);
 }
 
 #endif
