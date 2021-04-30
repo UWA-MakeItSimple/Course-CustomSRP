@@ -2,6 +2,7 @@
 #define CUSTOM_GI_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/EntityLighting.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
 
 TEXTURE2D(unity_Lightmap);
 SAMPLER(samplerunity_Lightmap);
@@ -11,6 +12,9 @@ SAMPLER(samplerunity_ShadowMask);
 
 TEXTURE3D_FLOAT(unity_ProbeVolumeSH);
 SAMPLER(samplerunity_ProbeVolumeSH);
+
+TEXTURECUBE(unity_SpecCube0);
+SAMPLER(samplerunity_SpecCube0);
 
 #if defined(LIGHTMAP_ON)
 	#define GI_ATTRIBUTE_DATA float2 lightMapUV : TEXCOORD1;
@@ -26,6 +30,7 @@ SAMPLER(samplerunity_ProbeVolumeSH);
 
 struct GI {
 	float3 diffuse;
+    float3 specular;
     ShadowMask shadowMask;
 };
 
@@ -92,9 +97,20 @@ float3 SampleLightProbe (Surface surfaceWS) {
 	#endif
 }
 
-GI GetGI (float2 lightMapUV, Surface surfaceWS) {
-	GI gi;
+float3 SmapleEnviroment(Surface surfaceWS, BRDF brdf)
+{
+    float3 uvw = reflect(-surfaceWS.viewDirection, surfaceWS.normal);
+    float mip = PerceptualRoughnessToMipmapLevel(brdf.perceptualRoughness);
+	//SAMPLE_TEXTURECUBE_LOD(textureName, samplerName, coord3, lod) 
+    float4 enviroment = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, uvw, mip);
+    return DecodeHDREnvironment(enviroment, unity_SpecCube0_HDR);
+}
+
+GI GetGI(float2 lightMapUV, Surface surfaceWS, BRDF brdf)
+{
+    GI gi;
     gi.diffuse = SampleLightMap(lightMapUV) + SampleLightProbe(surfaceWS);
+    gi.specular = SmapleEnviroment(surfaceWS, brdf);
     gi.shadowMask.always = false;
     gi.shadowMask.distance = false;
     gi.shadowMask.shadows = 1.0;
@@ -106,7 +122,7 @@ GI GetGI (float2 lightMapUV, Surface surfaceWS) {
 	gi.shadowMask.distance = true;
 	gi.shadowMask.shadows = SampleBakedShadows(lightMapUV, surfaceWS);
 #endif
-	return gi;
+    return gi;
 }
 
 #endif

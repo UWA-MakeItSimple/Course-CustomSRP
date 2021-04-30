@@ -85,7 +85,8 @@ public partial class CameraRenderer {
 			enableInstancing = useGPUInstancing,
 			perObjectData = PerObjectData.Lightmaps | PerObjectData.ShadowMask | 
 							PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume |
-							PerObjectData.OcclusionProbe | PerObjectData.OcclusionProbeProxyVolume
+							PerObjectData.OcclusionProbe | PerObjectData.OcclusionProbeProxyVolume|
+							PerObjectData.ReflectionProbes
 		};
 		drawingSettings.SetShaderPassName(1, litShaderTagId);
 

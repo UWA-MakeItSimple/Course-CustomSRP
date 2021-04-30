@@ -37,4 +37,9 @@ float GetSmoothness () {
 	return 0.0;
 }
 
+float GetFresnel(float2 baseUV)
+{
+    return 0.0;
+}
+
 #endif
